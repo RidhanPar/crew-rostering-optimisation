@@ -6,6 +6,8 @@
     python -m crew_roster diagnose     demonstrate and explain an infeasible model
     python -m crew_roster check        independently check the last solved roster
     python -m crew_roster scenarios    run what if scenarios and compare them
+    python -m crew_roster report       write Power BI tables from scenario outputs
+    python -m crew_roster run-all      every step above, in order, stopping on failure
 """
 
 from __future__ import annotations
@@ -29,6 +31,7 @@ from crew_roster.model.data import load_model_data
 from crew_roster.model.diagnose import diagnose
 from crew_roster.model.roster import solve_roster
 from crew_roster.model.solve import INFEASIBLE
+from crew_roster.reporting.powerbi import export_powerbi
 
 log = logging.getLogger("crew_roster")
 
@@ -131,6 +134,28 @@ def cmd_scenarios(config, args) -> int:
     return 1 if (table["check_errors"] > 0).any() else 0
 
 
+def cmd_report(config, _args) -> int:
+    with closing(connect(config.paths.database)) as conn:
+        export_powerbi(conn, config.paths.output_dir / "scenarios", config.paths.output_dir / "powerbi")
+    return 0
+
+
+def cmd_run_all(config, args) -> int:
+    steps = [
+        ("generate", cmd_generate), ("prepare", cmd_prepare), ("solve", cmd_solve), ("check", cmd_check),
+        ("diagnose", cmd_diagnose), ("scenarios", cmd_scenarios), ("report", cmd_report),
+    ]
+    defaults = build_parser()
+    for name, fn in steps:
+        log.info("==== %s ====", name)
+        step_args = defaults.parse_args([name])
+        code = fn(config, step_args)
+        if code != 0:
+            log.error("Step %s failed with exit code %s; stopping", name, code)
+            return code
+    return 0
+
+
 COMMANDS = {
     "generate": (cmd_generate, "Generate synthetic raw CSVs"),
     "prepare": (cmd_prepare, "Clean, transform and validate raw data into SQLite"),
@@ -138,6 +163,8 @@ COMMANDS = {
     "diagnose": (cmd_diagnose, "Make one pool infeasible with a sickness wave and explain why"),
     "check": (cmd_check, "Independently re check outputs/roster against the rules"),
     "scenarios": (cmd_scenarios, "Run scenarios from config/scenarios.toml and compare to baseline"),
+    "report": (cmd_report, "Write Power BI star schema CSVs to outputs/powerbi"),
+    "run-all": (cmd_run_all, "Run the whole pipeline end to end"),
 }
 
 
