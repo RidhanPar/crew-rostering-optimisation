@@ -14,3 +14,4 @@ data/*.db-journal
 outputs/logs/
 outputs/solver_logs/
 outputs/scenarios/*/model.lp
+outputs/roster/

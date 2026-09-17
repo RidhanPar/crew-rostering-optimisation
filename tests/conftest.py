@@ -20,7 +20,7 @@ def small_config(tmp_path, dirty: bool = True, **overrides):
         # A 14 day, one base dataset has few duties, so the 6 injected bad
         # duties are about 10% of flying. Relax the gate for tests only.
         "pipeline": {"max_rejected_share": 0.25},
-        "solver": {"time_limit_seconds": 60, "threads": 2},
+        "solver": {"time_limit_seconds": 60},
     }
     for section, values in overrides.items():
         base.setdefault(section, {}).update(values)

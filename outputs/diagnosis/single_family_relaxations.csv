@@ -1,0 +1,6 @@
+removed_family,status,fixes_it,pool_id
+rest,INFEASIBLE,False,EDI-B737-CPT
+daily_hours,INFEASIBLE,False,EDI-B737-CPT
+hours_7d,INFEASIBLE,False,EDI-B737-CPT
+days_7d,OPTIMAL,True,EDI-B737-CPT
+hours_month,INFEASIBLE,False,EDI-B737-CPT

@@ -84,3 +84,18 @@ def test_clean_input_rejects_nothing(tmp_path):
     conn = build_dataset(config)
     assert conn.execute("SELECT COUNT(*) FROM rejected_rows").fetchone()[0] == 0
     conn.close()
+
+
+def test_scenario_leave_wave_removes_eligibility_and_clears(dirty_db):
+    from crew_roster.data.scenario_leave import LeaveWave, apply_leave_waves, clear_scenario_leave
+
+    before = dirty_db.execute("SELECT COUNT(*) FROM eligibility").fetchone()[0]
+    sick = apply_leave_waves(dirty_db, [LeaveWave("MAN-A320-CPT", 2, 3, 5)])
+    assert len(sick) == 2
+    on_leave = dirty_db.execute(f"""
+        SELECT COUNT(*) FROM eligibility e JOIN duties d USING (duty_id)
+        WHERE e.crew_id IN ({','.join('?' * len(sick))}) AND d.day_index BETWEEN 3 AND 5""", sick).fetchone()[0]
+    assert on_leave == 0
+    assert dirty_db.execute("SELECT COUNT(*) FROM eligibility").fetchone()[0] < before
+    clear_scenario_leave(dirty_db)
+    assert dirty_db.execute("SELECT COUNT(*) FROM eligibility").fetchone()[0] == before

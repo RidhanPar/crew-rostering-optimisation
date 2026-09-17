@@ -1,0 +1,3 @@
+check,pool_id,window,demand,capacity,detail
+7_day_duty_day_shortage,EDI-B737-CPT,days 8-14,22,19,"22 seats, at most 19 duty days under the 5 in 7 rule"
+7_day_duty_day_shortage,EDI-B737-CPT,days 9-15,22,20,"22 seats, at most 20 duty days under the 5 in 7 rule"

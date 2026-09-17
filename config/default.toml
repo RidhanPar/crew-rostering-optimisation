@@ -38,10 +38,13 @@ overtime_premium = 0.5            # overtime hours cost an extra 50% of the hour
 mode = "weighted"                 # cost | fairness | weighted
 fairness_weight_total = 20.0      # GBP per hour of deviation from a crew member's fair target
 fairness_weight_max = 100.0       # GBP per hour of the worst deviation in each crew pool
+fairness_tolerance_hours = 4.0    # deviation inside +/- this band is free (duties come in ~8h blocks)
 uncovered_penalty = 50000.0       # GBP per crew seat left unfilled
 
 [solver]
 elastic_coverage = true           # allow uncovered seats at a penalty instead of failing
-time_limit_seconds = 300
+decompose_by_pool = true          # solve each crew pool as its own model (exact, see docs)
+time_limit_seconds = 60           # per model, so per pool when decomposing
 gap_rel = 0.005                   # stop when proven within 0.5% of the best possible
-threads = 4
+# No threads option: the CBC 2.10.3 binary bundled with PuLP crashed or hung
+# whenever -threads was passed on Windows, so CBC runs single threaded.
