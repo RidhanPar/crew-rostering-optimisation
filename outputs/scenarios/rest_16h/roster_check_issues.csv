@@ -1,0 +1,4 @@
+stage,check,severity,entity,detail
+output,seat_uncovered,WARNING,D20261017-EDI-B737-03:CPT,"1 seat(s) open on 2026-10-17 15:15, needs reserve cover"
+output,seat_uncovered,WARNING,D20261025-EDI-B737-04:CPT,"1 seat(s) open on 2026-10-25 06:15, needs reserve cover"
+output,overtime_used,INFO,17 pilots,"83.7 overtime hours, £5,673 premium"

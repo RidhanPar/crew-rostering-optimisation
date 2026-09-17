@@ -1,0 +1,4 @@
+# Cost only mode, rest 12h, gap_rel 0.0005 (0.05%), 60s per pool
+# status objective best_bound gap_pct solve_seconds uncovered
+12 FEASIBLE 1392521 1390426 0.15 666.2 0
+# The rest 14h run was stopped by hand; one run already showed the tolerance was impractical.

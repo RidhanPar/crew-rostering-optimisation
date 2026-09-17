@@ -1,0 +1,17 @@
+stage,check,severity,entity,detail
+output,available_pilot_unused,WARNING,C0021,"31 available days, no duties. Check eligibility or staffing"
+output,available_pilot_unused,WARNING,C0029,"31 available days, no duties. Check eligibility or staffing"
+output,available_pilot_unused,WARNING,C0031,"31 available days, no duties. Check eligibility or staffing"
+output,available_pilot_unused,WARNING,C0039,"31 available days, no duties. Check eligibility or staffing"
+output,available_pilot_unused,WARNING,C0052,"24 available days, no duties. Check eligibility or staffing"
+output,available_pilot_unused,WARNING,C0064,"31 available days, no duties. Check eligibility or staffing"
+output,available_pilot_unused,WARNING,C0079,"31 available days, no duties. Check eligibility or staffing"
+output,available_pilot_unused,WARNING,C0086,"19 available days, no duties. Check eligibility or staffing"
+output,available_pilot_unused,WARNING,C0089,"31 available days, no duties. Check eligibility or staffing"
+output,available_pilot_unused,WARNING,C0095,"31 available days, no duties. Check eligibility or staffing"
+output,available_pilot_unused,WARNING,C0097,"31 available days, no duties. Check eligibility or staffing"
+output,available_pilot_unused,WARNING,C0103,"24 available days, no duties. Check eligibility or staffing"
+output,available_pilot_unused,WARNING,C0109,"31 available days, no duties. Check eligibility or staffing"
+output,available_pilot_unused,WARNING,C0131,"30 available days, no duties. Check eligibility or staffing"
+output,month_cap_binding,INFO,1 pilots,within 1h of the monthly cap; this rule is limiting the roster
+output,overtime_used,INFO,43 pilots,"349.2 overtime hours, £15,085 premium"
