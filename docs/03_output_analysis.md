@@ -125,9 +125,13 @@ Honest reading:
   lower bound (£1,431,061), which says the relaxation does not feel these
   rules at all.
 - An attempt to resolve it with a 0.05% gap in cost only mode ran 666
-  seconds and still stopped at 0.15% (`docs/measurements/`). So the defensible
-  statement is "less than about 0.3% of monthly pay, and resolving it more
-  finely needs a stronger formulation or a commercial solver".
+  seconds and still stopped at 0.15% (`docs/measurements/`).
+- What the bounds do prove: a tighter rule can never lower the true optimum,
+  and the true 14h optimum is at most the 14h roster's objective (£1,435,257),
+  while the true 12h optimum is at least the 12h bound (£1,431,061). So moving
+  to 14h rest costs **between £0 and £4,196 a month** in objective terms
+  (0.29%). That range is the defensible answer; narrowing it needs a stronger
+  formulation or a commercial solver.
 - The real cost of tighter rules is **coverage**, not pay. At 16h rest, or
   4 duty days in 7, the solver proves it cannot cover every seat.
 
