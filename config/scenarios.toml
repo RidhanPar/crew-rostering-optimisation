@@ -1,0 +1,70 @@
+# What if scenarios. Each one overrides config/default.toml for a single run.
+# Same data, same solver; only the listed settings change, so differences in
+# cost, coverage and fairness are caused by the rule change.
+#
+# group: rules | objective | disruption  (used to group results in reports)
+
+[[scenario]]
+name = "baseline"
+group = "rules"
+description = "Default rules: 12h rest (at least previous duty length), 60h and 5 duty days in 7, 190h month"
+
+[[scenario]]
+name = "rest_10h_flat"
+group = "rules"
+description = "Looser rest: 10h minimum, no link to previous duty length"
+overrides = { rules = { min_rest_hours = 10.0, rest_at_least_previous_duty = false } }
+
+[[scenario]]
+name = "rest_14h"
+group = "rules"
+description = "Tighter rest: 14h minimum"
+overrides = { rules = { min_rest_hours = 14.0 } }
+
+[[scenario]]
+name = "rest_16h"
+group = "rules"
+description = "Much tighter rest: 16h minimum"
+overrides = { rules = { min_rest_hours = 16.0 } }
+
+[[scenario]]
+name = "max_50h_7d"
+group = "rules"
+description = "Weekly duty cap cut from 60h to 50h"
+overrides = { rules = { max_duty_hours_7d = 50.0 } }
+
+[[scenario]]
+name = "max_4_days_7d"
+group = "rules"
+description = "At most 4 duty days in any 7, instead of 5"
+overrides = { rules = { max_duty_days_7d = 4 } }
+
+[[scenario]]
+name = "cost_only"
+group = "objective"
+description = "Minimise pay only, fairness ignored"
+overrides = { objective = { mode = "cost" } }
+
+[[scenario]]
+name = "fairness_weight_5"
+group = "objective"
+description = "Weighted, fairness priced at 5 GBP per hour of deviation (worst case 25)"
+overrides = { objective = { fairness_weight_total = 5.0, fairness_weight_max = 25.0 } }
+
+[[scenario]]
+name = "fairness_weight_80"
+group = "objective"
+description = "Weighted, fairness priced at 80 GBP per hour of deviation (worst case 400)"
+overrides = { objective = { fairness_weight_total = 80.0, fairness_weight_max = 400.0 } }
+
+[[scenario]]
+name = "fairness_only"
+group = "objective"
+description = "Minimise deviation from fair targets, cost only breaks ties"
+overrides = { objective = { mode = "fairness" } }
+
+[[scenario]]
+name = "sickness_wave_edi_b737"
+group = "disruption"
+description = "3 Edinburgh 737 captains sick on days 8 to 14"
+leave_waves = [ { pool_id = "EDI-B737-CPT", count = 3, start_day = 8, end_day = 14 } ]
