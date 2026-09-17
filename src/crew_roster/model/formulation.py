@@ -85,6 +85,7 @@ def rest_cliques(report_h: np.ndarray, release_h: np.ndarray, min_rest_h: float,
             seen.add(members)
             cliques.append(members)
     # Drop cliques contained in a bigger one; they add rows but no strength.
+    # So tighter rest can mean fewer, larger rest rows, not more.
     cliques.sort(key=len, reverse=True)
     kept: list[set[int]] = []
     result = []
