@@ -1,0 +1,28 @@
+2026-09-17 07:38:49,675 INFO    crew_roster.model.roster: Pool BHX-A320-CPT   OPTIMAL in 1.3s
+2026-09-17 07:39:49,896 INFO    crew_roster.model.roster: Pool BHX-A320-FO    FEASIBLE in 60.0s
+2026-09-17 07:39:50,728 INFO    crew_roster.model.roster: Pool BHX-E190-CPT   OPTIMAL in 0.7s
+2026-09-17 07:40:50,944 INFO    crew_roster.model.roster: Pool BHX-E190-FO    FEASIBLE in 60.0s
+2026-09-17 07:40:54,867 INFO    crew_roster.model.roster: Pool EDI-A320-CPT   OPTIMAL in 3.8s
+2026-09-17 07:41:07,076 INFO    crew_roster.model.roster: Pool EDI-A320-FO    OPTIMAL in 12.1s
+2026-09-17 07:41:07,835 INFO    crew_roster.model.roster: Pool EDI-B737-CPT   OPTIMAL in 0.6s
+2026-09-17 07:41:52,154 INFO    crew_roster.model.roster: Pool EDI-B737-FO    OPTIMAL in 44.2s
+2026-09-17 07:41:54,003 INFO    crew_roster.model.roster: Pool MAN-A320-CPT   OPTIMAL in 1.6s
+2026-09-17 07:42:54,452 INFO    crew_roster.model.roster: Pool MAN-A320-FO    FEASIBLE in 60.1s
+2026-09-17 07:43:01,757 INFO    crew_roster.model.roster: Pool MAN-B737-CPT   OPTIMAL in 7.1s
+2026-09-17 07:44:02,026 INFO    crew_roster.model.roster: Pool MAN-B737-FO    FEASIBLE in 60.1s
+{'status': 'FEASIBLE', 'cbc_result': '12 pool models', 'objective': 1444336.0964288218, 'best_bound': 1438029.5980000002, 'gap': 0.004366364895549333, 'build_seconds': 1.944, 'solve_seconds': 311.587, 'wall_seconds': 313.818, 'n_variables': 17797, 'n_binaries': 15897, 'n_constraints': 18274, 'nodes': 108256, 'time_limit_hit': True, 'uncovered_seats': 0.0, 'pay_cost': 1423506.7942, 'overtime_cost': 7372.3812, 'fairness_total_dev_hours': 356.7315, 'fairness_max_dev_hours': 63.2228}
+         pool_id    status  solve_seconds       gap  n_variables  n_constraints  uncovered_seats  overtime_cost  fairness_max_dev_hours
+0   BHX-A320-CPT   OPTIMAL          1.256  0.004239         1587           1625              0.0         0.0000                  3.2956
+1    BHX-A320-FO  FEASIBLE         60.042  0.006252         1493           1551              0.0         0.0000                  2.4212
+2   BHX-E190-CPT   OPTIMAL          0.692  0.004585         1035           1327              0.0         0.0000                  6.5661
+3    BHX-E190-FO  FEASIBLE         60.035  0.005268         1054           1361              0.0         0.0000                  2.2353
+4   EDI-A320-CPT   OPTIMAL          3.786  0.004352          896           1101              0.0         0.0000                  3.4167
+5    EDI-A320-FO   OPTIMAL         12.080  0.002602          952           1168              0.0       201.8696                  0.9968
+6   EDI-B737-CPT   OPTIMAL          0.621  0.001022          682            810              0.0      5674.1426                 20.8570
+7    EDI-B737-FO   OPTIMAL         44.202  0.004937          864           1036              0.0         0.0000                  1.9095
+8   MAN-A320-CPT   OPTIMAL          1.557  0.004015         2802           2342              0.0      1496.3690                 10.3963
+9    MAN-A320-FO  FEASIBLE         60.100  0.006067         3313           2780              0.0         0.0000                  4.0574
+10  MAN-B737-CPT   OPTIMAL          7.121  0.004660         1603           1619              0.0         0.0000                  4.2854
+11   MAN-B737-FO  FEASIBLE         60.093  0.006347         1516           1554              0.0         0.0000                  2.7855
+
+[exited with code 0]
