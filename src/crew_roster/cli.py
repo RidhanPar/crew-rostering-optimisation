@@ -4,6 +4,8 @@
     python -m crew_roster prepare      clean, transform and validate into SQLite
     python -m crew_roster solve        build and solve the roster model
     python -m crew_roster diagnose     demonstrate and explain an infeasible model
+    python -m crew_roster check        independently check the last solved roster
+    python -m crew_roster scenarios    run what if scenarios and compare them
 """
 
 from __future__ import annotations
@@ -15,6 +17,8 @@ import sys
 from contextlib import closing
 from pathlib import Path
 
+from crew_roster.analysis.consistency import check_roster, load_check_inputs
+from crew_roster.analysis.scenarios import run_scenarios
 from crew_roster.config import load_config
 from crew_roster.data.generate import generate
 from crew_roster.data.pipeline import connect, run_pipeline
@@ -97,11 +101,43 @@ def cmd_diagnose(config, args) -> int:
     return 0
 
 
+def cmd_check(config, _args) -> int:
+    import pandas as pd
+
+    out = config.paths.output_dir / "roster"
+    if not (out / "assignments.csv").exists():
+        log.error("No roster at %s; run solve first", out)
+        return 2
+    assignments = pd.read_csv(out / "assignments.csv")
+    uncovered = pd.read_csv(out / "uncovered_seats.csv")
+    summary = json.loads((out / "solve_summary.json").read_text())
+    with closing(connect(config.paths.database)) as conn:
+        clear_scenario_leave(conn)
+        report = check_roster(load_check_inputs(conn), assignments, uncovered, config, reported=summary)
+    report.issues.to_csv(out / "roster_check_issues.csv", index=False)
+    report.crew_hours.to_csv(out / "crew_hours.csv", index_label="crew_id")
+    for row in report.issues[report.issues.severity != "INFO"].head(20).itertuples():
+        log.warning("[%s] %s %s: %s", row.severity, row.check, row.entity, row.detail)
+    return 1 if not report.errors.empty else 0
+
+
+def cmd_scenarios(config, args) -> int:
+    names = args.only.split(",") if args.only else None
+    with closing(connect(config.paths.database)) as conn:
+        _outcomes, table = run_scenarios(conn, config, names, out_root=config.paths.output_dir / "scenarios")
+    cols = ["scenario", "status", "total_cost_gbp", "total_cost_delta_pct", "uncovered_seats",
+            "mean_abs_deviation_hours", "max_abs_deviation_hours", "solve_seconds", "check_errors"]
+    log.info("Scenario comparison:\n%s", table[cols].to_string(index=False))
+    return 1 if (table["check_errors"] > 0).any() else 0
+
+
 COMMANDS = {
     "generate": (cmd_generate, "Generate synthetic raw CSVs"),
     "prepare": (cmd_prepare, "Clean, transform and validate raw data into SQLite"),
     "solve": (cmd_solve, "Build and solve the roster"),
     "diagnose": (cmd_diagnose, "Make one pool infeasible with a sickness wave and explain why"),
+    "check": (cmd_check, "Independently re check outputs/roster against the rules"),
+    "scenarios": (cmd_scenarios, "Run scenarios from config/scenarios.toml and compare to baseline"),
 }
 
 
@@ -115,6 +151,8 @@ def _add_arguments(name: str, sub: argparse.ArgumentParser) -> None:
         sub.add_argument("--count", type=int, default=3)
         sub.add_argument("--days", default="8-14", help="Inclusive day index range, e.g. 8-14")
         sub.add_argument("--time-limit", type=float, default=60)
+    elif name == "scenarios":
+        sub.add_argument("--only", help="Comma separated scenario names (baseline always runs)")
 
 
 def build_parser() -> argparse.ArgumentParser:
