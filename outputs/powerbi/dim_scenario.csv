@@ -1,0 +1,12 @@
+scenario,scenario_group,description,sort_order
+baseline,rules,"Default rules: 12h rest (at least previous duty length), 60h and 5 duty days in 7, 190h month",0
+rest_10h_flat,rules,"Looser rest: 10h minimum, no link to previous duty length",1
+rest_14h,rules,Tighter rest: 14h minimum,2
+rest_16h,rules,Much tighter rest: 16h minimum,3
+max_50h_7d,rules,Weekly duty cap cut from 60h to 50h,4
+max_4_days_7d,rules,"At most 4 duty days in any 7, instead of 5",5
+cost_only,objective,"Minimise pay only, fairness ignored",6
+fairness_weight_5,objective,"Weighted, fairness priced at 5 GBP per hour of deviation (worst case 25)",7
+fairness_weight_80,objective,"Weighted, fairness priced at 80 GBP per hour of deviation (worst case 400)",8
+fairness_only,objective,"Minimise deviation from fair targets, cost only breaks ties",9
+sickness_wave_edi_b737,disruption,3 Edinburgh 737 captains sick on days 8 to 14,10
