@@ -2,19 +2,29 @@
 
     python -m crew_roster generate     build raw CSVs
     python -m crew_roster prepare      clean, transform and validate into SQLite
+    python -m crew_roster solve        build and solve the roster model
+    python -m crew_roster diagnose     demonstrate and explain an infeasible model
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import sys
+from contextlib import closing
+from pathlib import Path
 
 from crew_roster.config import load_config
 from crew_roster.data.generate import generate
 from crew_roster.data.pipeline import connect, run_pipeline
+from crew_roster.data.scenario_leave import LeaveWave, apply_leave_waves, clear_scenario_leave
 from crew_roster.data.validate import ValidationFailed, assert_valid, run_validation
 from crew_roster.logging_setup import setup_logging
+from crew_roster.model.data import load_model_data
+from crew_roster.model.diagnose import diagnose
+from crew_roster.model.roster import solve_roster
+from crew_roster.model.solve import INFEASIBLE
 
 log = logging.getLogger("crew_roster")
 
@@ -27,7 +37,7 @@ def cmd_generate(config, _args) -> int:
 
 def cmd_prepare(config, _args) -> int:
     run_pipeline(config)
-    with connect(config.paths.database) as conn:
+    with closing(connect(config.paths.database)) as conn:
         issues = run_validation(conn)
     try:
         assert_valid(issues)
@@ -37,10 +47,74 @@ def cmd_prepare(config, _args) -> int:
     return 0
 
 
+def write_result(result, out_dir: Path) -> None:
+    out_dir.mkdir(parents=True, exist_ok=True)
+    result.assignments.to_csv(out_dir / "assignments.csv", index=False)
+    result.uncovered.to_csv(out_dir / "uncovered_seats.csv", index=False)
+    result.pool_results.to_csv(out_dir / "pool_results.csv", index=False)
+    (out_dir / "solve_summary.json").write_text(json.dumps(result.summary(), indent=2, default=str))
+
+
+def cmd_solve(config, args) -> int:
+    if args.mode:
+        config = config.with_overrides({"objective": {"mode": args.mode}})
+    with closing(connect(config.paths.database)) as conn:
+        clear_scenario_leave(conn)
+        data = load_model_data(conn)
+    result = solve_roster(data, config, elastic=False if args.strict else None,
+                          decompose=False if args.no_decompose else None)
+    out = config.paths.output_dir / "roster"
+    write_result(result, out)
+    log.info("Status %s, objective %s, %d assignments, %d uncovered seats, written to %s",
+             result.status, result.objective, len(result.assignments),
+             int(result.uncovered["seats"].sum()) if not result.uncovered.empty else 0, out)
+    return 0 if result.has_roster else 3
+
+
+def cmd_diagnose(config, args) -> int:
+    """Knock out pilots in one pool, show the strict model fails, then explain why."""
+    start, end = (int(x) for x in args.days.split("-"))
+    wave = LeaveWave(args.pool, args.count, start, end)
+    with closing(connect(config.paths.database)) as conn:
+        apply_leave_waves(conn, [wave])
+        data = load_model_data(conn)
+        clear_scenario_leave(conn)
+    pool_data = data.subset_pools({args.pool})
+    strict = solve_roster(pool_data, config, elastic=False, decompose=False)
+    log.info("Strict solve with %d %s pilots sick on days %s: %s", args.count, args.pool, args.days, strict.status)
+    if strict.status != INFEASIBLE:
+        log.info("Model is still feasible; try a larger --count")
+        return 0
+    diag = diagnose(pool_data, config, time_limit=args.time_limit)
+    out = config.paths.output_dir / "diagnosis"
+    out.mkdir(parents=True, exist_ok=True)
+    diag.precheck.to_csv(out / "capacity_precheck.csv", index=False)
+    diag.uncovered.to_csv(out / "min_uncovered_seats.csv", index=False)
+    diag.single_relaxations.to_csv(out / "single_family_relaxations.csv", index=False)
+    (out / "conflict_sets.json").write_text(json.dumps(diag.conflict_sets, indent=2))
+    for line in diag.summary_lines():
+        log.info(line)
+    return 0
+
+
 COMMANDS = {
     "generate": (cmd_generate, "Generate synthetic raw CSVs"),
     "prepare": (cmd_prepare, "Clean, transform and validate raw data into SQLite"),
+    "solve": (cmd_solve, "Build and solve the roster"),
+    "diagnose": (cmd_diagnose, "Make one pool infeasible with a sickness wave and explain why"),
 }
+
+
+def _add_arguments(name: str, sub: argparse.ArgumentParser) -> None:
+    if name == "solve":
+        sub.add_argument("--mode", choices=["cost", "fairness", "weighted"])
+        sub.add_argument("--strict", action="store_true", help="No uncovered seats allowed")
+        sub.add_argument("--no-decompose", action="store_true", help="Solve all pools as one model")
+    elif name == "diagnose":
+        sub.add_argument("--pool", default="EDI-B737-CPT")
+        sub.add_argument("--count", type=int, default=3)
+        sub.add_argument("--days", default="8-14", help="Inclusive day index range, e.g. 8-14")
+        sub.add_argument("--time-limit", type=float, default=60)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -49,7 +123,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--config", help="Path to a TOML config (default config/default.toml)")
     sub = parser.add_subparsers(dest="command", required=True)
     for name, (_fn, help_text) in COMMANDS.items():
-        sub.add_parser(name, help=help_text)
+        _add_arguments(name, sub.add_parser(name, help=help_text))
     return parser
 
 
