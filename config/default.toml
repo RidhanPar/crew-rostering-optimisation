@@ -1,0 +1,47 @@
+# Crew rostering configuration.
+# Every rule the solver enforces lives here, so a planner can see and change
+# the rules without touching code. Scenarios in scenarios.toml override these.
+
+[paths]
+raw_dir = "data/raw"
+database = "data/roster.db"
+output_dir = "outputs"
+
+[logging]
+level = "INFO"
+
+[generation]
+seed = 42
+profile = "full"            # full = 3 bases, 3 fleets; small = 1 base, used by tests
+period_start = "2026-10-01"
+period_days = 31
+inject_dirty_rows = true    # add realistic bad rows so the pipeline has something to catch
+
+[pipeline]
+max_rejected_share = 0.05   # block the run if more than 5% of flight rows are rejected
+
+[rules]
+report_minutes = 60               # crew report this long before first departure
+debrief_minutes = 30              # duty ends this long after last arrival
+min_rest_hours = 12.0             # minimum rest between two duties
+rest_at_least_previous_duty = true  # rest must also be at least as long as the duty before it
+max_duty_hours_day = 13.0         # cap on duty hours starting on one calendar day
+max_duty_hours_7d = 60.0          # cap in any 7 consecutive days
+max_duty_days_7d = 5              # at most 5 duty days in any 7 consecutive days
+max_duty_hours_month = 190.0      # cap across the planning period
+
+[pay]
+overtime_threshold_hours = 110.0  # full time monthly hours before overtime, prorated by FTE
+overtime_premium = 0.5            # overtime hours cost an extra 50% of the hourly rate
+
+[objective]
+mode = "weighted"                 # cost | fairness | weighted
+fairness_weight_total = 20.0      # GBP per hour of deviation from a crew member's fair target
+fairness_weight_max = 100.0       # GBP per hour of the worst deviation in each crew pool
+uncovered_penalty = 50000.0       # GBP per crew seat left unfilled
+
+[solver]
+elastic_coverage = true           # allow uncovered seats at a penalty instead of failing
+time_limit_seconds = 300
+gap_rel = 0.005                   # stop when proven within 0.5% of the best possible
+threads = 4

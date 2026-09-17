@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crew-roster"
+version = "0.1.0"
+description = "Monthly airline crew rostering as a Mixed-Integer Program, with a validated data layer and Power BI outputs"
+requires-python = ">=3.11"
+dependencies = [
+    "pulp==3.3.2",
+    "pandas>=2.0",
+    "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+crew-roster = "crew_roster.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning:pulp.*"]

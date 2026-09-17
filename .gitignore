@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.venv/
+build/
+dist/
+
+# Rebuilt from data/raw on every run
+data/*.db
+data/*.db-journal
+
+# Per run scratch and logs
+outputs/logs/
+outputs/solver_logs/
+outputs/scenarios/*/model.lp
