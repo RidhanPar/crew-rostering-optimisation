@@ -60,6 +60,7 @@ class ObjectiveConfig:
     mode: str
     fairness_weight_total: float
     fairness_weight_max: float
+    fairness_tolerance_hours: float
     uncovered_penalty: float
 
     def __post_init__(self) -> None:
@@ -70,9 +71,9 @@ class ObjectiveConfig:
 @dataclass(frozen=True)
 class SolverConfig:
     elastic_coverage: bool
+    decompose_by_pool: bool
     time_limit_seconds: float
     gap_rel: float
-    threads: int
 
 
 @dataclass(frozen=True)
