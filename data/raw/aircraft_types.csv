@@ -1,0 +1,4 @@
+type_code,description,captains_required,first_officers_required
+A320,Airbus A320,1,1
+B737,Boeing 737-800,1,1
+E190,Embraer 190,1,1
