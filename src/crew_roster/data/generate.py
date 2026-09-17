@@ -350,7 +350,7 @@ def generate(raw_dir: Path, seed: int, profile: str, period_start: str, period_d
         "flights": pd.DataFrame(flights),
     }
     for name, df in tables.items():
-        df.to_csv(raw_dir / f"{name}.csv", index=False)
+        df.to_csv(raw_dir / f"{name}.csv", index=False, lineterminator="\n")
 
     manifest = {
         "seed": seed,
