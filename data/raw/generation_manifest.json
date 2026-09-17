@@ -1,0 +1,149 @@
+{
+  "seed": 42,
+  "profile": "full",
+  "period_start": "2026-10-01",
+  "period_days": 31,
+  "row_counts": {
+    "bases": 3,
+    "aircraft_types": 3,
+    "crew": 139,
+    "crew_qualifications": 140,
+    "leave": 77,
+    "flights": 2254
+  },
+  "clean_duties_generated": 743,
+  "injected_defects": [
+    {
+      "table": "flights",
+      "defect": "exact_duplicate",
+      "key": "F000787",
+      "expected": "deduplicated"
+    },
+    {
+      "table": "flights",
+      "defect": "exact_duplicate",
+      "key": "F000482",
+      "expected": "deduplicated"
+    },
+    {
+      "table": "flights",
+      "defect": "exact_duplicate",
+      "key": "F002172",
+      "expected": "deduplicated"
+    },
+    {
+      "table": "flights",
+      "defect": "messy_airport_code",
+      "key": "F000392",
+      "expected": "normalised"
+    },
+    {
+      "table": "flights",
+      "defect": "messy_airport_code",
+      "key": "F001483",
+      "expected": "normalised"
+    },
+    {
+      "table": "flights",
+      "defect": "slash_timestamp",
+      "key": "F002211",
+      "expected": "normalised"
+    },
+    {
+      "table": "flights",
+      "defect": "slash_timestamp",
+      "key": "F002079",
+      "expected": "normalised"
+    },
+    {
+      "table": "flights",
+      "defect": "arrival_before_departure",
+      "key": "D20261013-MAN-B737-01",
+      "expected": "duty_rejected"
+    },
+    {
+      "table": "flights",
+      "defect": "unknown_aircraft_type",
+      "key": "D20261015-MAN-B737-04",
+      "expected": "duty_rejected"
+    },
+    {
+      "table": "flights",
+      "defect": "broken_leg_chain",
+      "key": "D20261018-MAN-A320-03",
+      "expected": "duty_rejected"
+    },
+    {
+      "table": "flights",
+      "defect": "conflicting_duplicate_id",
+      "key": "D20261001-BHX-E190-01",
+      "expected": "duty_rejected"
+    },
+    {
+      "table": "flights",
+      "defect": "duty_exceeds_daily_limit",
+      "key": "D20261004-MAN-A320-99",
+      "expected": "duty_rejected"
+    },
+    {
+      "table": "crew",
+      "defect": "exact_duplicate",
+      "key": "C0040",
+      "expected": "deduplicated"
+    },
+    {
+      "table": "crew",
+      "defect": "rank_text_variant",
+      "key": "C0030",
+      "expected": "normalised"
+    },
+    {
+      "table": "crew",
+      "defect": "rank_text_variant",
+      "key": "C0118",
+      "expected": "normalised"
+    },
+    {
+      "table": "crew",
+      "defect": "unknown_base",
+      "key": "C0006",
+      "expected": "rejected"
+    },
+    {
+      "table": "crew",
+      "defect": "missing_pay_rate",
+      "key": "C0009",
+      "expected": "rejected"
+    },
+    {
+      "table": "crew_qualifications",
+      "defect": "unknown_aircraft_type",
+      "key": "C0011",
+      "expected": "rejected"
+    },
+    {
+      "table": "crew_qualifications",
+      "defect": "unknown_crew",
+      "key": "C9999",
+      "expected": "rejected"
+    },
+    {
+      "table": "leave",
+      "defect": "end_before_start",
+      "key": "L00075",
+      "expected": "rejected"
+    },
+    {
+      "table": "leave",
+      "defect": "unknown_crew",
+      "key": "L00076",
+      "expected": "rejected"
+    },
+    {
+      "table": "leave",
+      "defect": "ambiguous_date_format",
+      "key": "L00077",
+      "expected": "rejected"
+    }
+  ]
+}
