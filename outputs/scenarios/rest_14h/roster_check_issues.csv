@@ -1,0 +1,2 @@
+stage,check,severity,entity,detail
+output,overtime_used,INFO,12 pilots,"109.3 overtime hours, £8,120 premium"
