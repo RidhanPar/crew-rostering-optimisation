@@ -1,0 +1,77 @@
+stage,check,severity,entity,detail,scenario
+cleaning,rejected:unknown_base,REJECTED,crew:C0006,"base ""LGW"" not in bases",(input)
+cleaning,rejected:invalid_pay_rate,REJECTED,crew:C0009,hourly rate missing or not positive,(input)
+cleaning,rejected:unknown_or_rejected_crew,REJECTED,crew_qualifications:C0006:A320,crew_id not in clean crew,(input)
+cleaning,rejected:unknown_or_rejected_crew,REJECTED,crew_qualifications:C0009:A320,crew_id not in clean crew,(input)
+cleaning,rejected:unknown_or_rejected_crew,REJECTED,crew_qualifications:C9999:A320,crew_id not in clean crew,(input)
+cleaning,rejected:unknown_aircraft_type,REJECTED,crew_qualifications:C0011:A350,"type ""A350"" not in aircraft_types",(input)
+cleaning,rejected:unknown_or_rejected_crew,REJECTED,leave:L00005,crew_id not in clean crew,(input)
+cleaning,rejected:unknown_or_rejected_crew,REJECTED,leave:L00076,crew_id not in clean crew,(input)
+cleaning,rejected:invalid_date,REJECTED,leave:L00077,start_date or end_date is not an ISO date,(input)
+cleaning,rejected:end_before_start,REJECTED,leave:L00075,2026-10-11 to 2026-10-05,(input)
+cleaning,rejected:conflicting_duplicate_id,REJECTED,flights:F000039,2 different rows share this flight_id,(input)
+cleaning,rejected:arrival_not_after_departure,REJECTED,flights:F000913,2026-10-13 07:30:00 to 2026-10-13 06:30:00,(input)
+cleaning,rejected:contains_rejected_flight,REJECTED,duties:D20261001-BHX-E190-01,at least one leg failed a flight rule,(input)
+cleaning,rejected:contains_rejected_flight,REJECTED,duties:D20261013-MAN-B737-01,at least one leg failed a flight rule,(input)
+cleaning,rejected:broken_leg_chain,REJECTED,duties:D20261018-MAN-A320-03,"leg 2 departs LBA at 2026-10-18 19:55:00, previous leg arrived PRG at 2026-10-18 19:10:00",(input)
+cleaning,rejected:exceeds_max_duty_hours_day,REJECTED,duties:D20261004-MAN-A320-99,"13.75 hours, limit 13.0",(input)
+input,crew_without_usable_qualification,WARNING,C0017,licence expired 2026-09-12,(input)
+input,crew_without_usable_qualification,WARNING,C0124,licence expired 2026-08-26,(input)
+input,licence_expires_in_period,WARNING,C0008,A320 licence expires 2026-10-20,(input)
+input,licence_expires_in_period,WARNING,C0030,A320 licence expires 2026-10-11,(input)
+input,licence_expires_in_period,WARNING,C0066,A320 licence expires 2026-10-11,(input)
+input,licence_expires_in_period,WARNING,C0075,A320 licence expires 2026-10-23,(input)
+input,licence_expires_in_period,WARNING,C0082,A320 licence expires 2026-10-09,(input)
+input,licence_expires_in_period,WARNING,C0123,B737 licence expires 2026-10-23,(input)
+input,overlapping_leave_records,WARNING,C0067,L00036 (ANNUAL) overlaps L00037 (TRAINING),(input)
+input,overlapping_leave_records,WARNING,C0087,L00046 (ANNUAL) overlaps L00047 (TRAINING),(input)
+input,pool_needs_overtime,WARNING,EDI-A320-FO,"799 hours required, 788 straight time hours available (101%)",(input)
+input,pool_needs_overtime,WARNING,EDI-B737-CPT,"786 hours required, 596 straight time hours available (131%)",(input)
+input,pool_needs_overtime,WARNING,MAN-A320-CPT,"1526 hours required, 1439 straight time hours available (106%)",(input)
+input,rejected_rows_summary,INFO,crew.invalid_pay_rate,1 rows,(input)
+input,rejected_rows_summary,INFO,crew.unknown_base,1 rows,(input)
+input,rejected_rows_summary,INFO,crew_qualifications.unknown_aircraft_type,1 rows,(input)
+input,rejected_rows_summary,INFO,crew_qualifications.unknown_or_rejected_crew,3 rows,(input)
+input,rejected_rows_summary,INFO,duties.broken_leg_chain,1 rows,(input)
+input,rejected_rows_summary,INFO,duties.contains_rejected_flight,2 rows,(input)
+input,rejected_rows_summary,INFO,duties.exceeds_max_duty_hours_day,1 rows,(input)
+input,rejected_rows_summary,INFO,flights.arrival_not_after_departure,1 rows,(input)
+input,rejected_rows_summary,INFO,flights.conflicting_duplicate_id,1 rows,(input)
+input,rejected_rows_summary,INFO,leave.end_before_start,1 rows,(input)
+input,rejected_rows_summary,INFO,leave.invalid_date,1 rows,(input)
+input,rejected_rows_summary,INFO,leave.unknown_or_rejected_crew,2 rows,(input)
+output,overtime_used,INFO,18 pilots,"100.4 overtime hours, £7,579 premium",baseline
+output,overtime_used,INFO,14 pilots,"106.9 overtime hours, £8,135 premium",rest_10h_flat
+output,overtime_used,INFO,12 pilots,"109.3 overtime hours, £8,120 premium",rest_14h
+output,seat_uncovered,WARNING,D20261017-EDI-B737-03:CPT,"1 seat(s) open on 2026-10-17 15:15, needs reserve cover",rest_16h
+output,seat_uncovered,WARNING,D20261025-EDI-B737-04:CPT,"1 seat(s) open on 2026-10-25 06:15, needs reserve cover",rest_16h
+output,overtime_used,INFO,17 pilots,"83.7 overtime hours, £5,673 premium",rest_16h
+output,overtime_used,INFO,15 pilots,"105.3 overtime hours, £7,893 premium",max_50h_7d
+output,seat_uncovered,WARNING,D20261017-EDI-B737-01:CPT,"1 seat(s) open on 2026-10-17 05:45, needs reserve cover",max_4_days_7d
+output,seat_uncovered,WARNING,D20261018-EDI-B737-02:CPT,"1 seat(s) open on 2026-10-18 10:00, needs reserve cover",max_4_days_7d
+output,seat_uncovered,WARNING,D20261020-EDI-B737-02:CPT,"1 seat(s) open on 2026-10-20 10:15, needs reserve cover",max_4_days_7d
+output,seat_uncovered,WARNING,D20261021-EDI-B737-03:CPT,"1 seat(s) open on 2026-10-21 15:30, needs reserve cover",max_4_days_7d
+output,overtime_used,INFO,15 pilots,"66.8 overtime hours, £4,585 premium",max_4_days_7d
+output,available_pilot_unused,WARNING,C0021,"31 available days, no duties. Check eligibility or staffing",cost_only
+output,available_pilot_unused,WARNING,C0029,"31 available days, no duties. Check eligibility or staffing",cost_only
+output,available_pilot_unused,WARNING,C0031,"31 available days, no duties. Check eligibility or staffing",cost_only
+output,available_pilot_unused,WARNING,C0039,"31 available days, no duties. Check eligibility or staffing",cost_only
+output,available_pilot_unused,WARNING,C0052,"24 available days, no duties. Check eligibility or staffing",cost_only
+output,available_pilot_unused,WARNING,C0064,"31 available days, no duties. Check eligibility or staffing",cost_only
+output,available_pilot_unused,WARNING,C0079,"31 available days, no duties. Check eligibility or staffing",cost_only
+output,available_pilot_unused,WARNING,C0086,"19 available days, no duties. Check eligibility or staffing",cost_only
+output,available_pilot_unused,WARNING,C0089,"31 available days, no duties. Check eligibility or staffing",cost_only
+output,available_pilot_unused,WARNING,C0095,"31 available days, no duties. Check eligibility or staffing",cost_only
+output,available_pilot_unused,WARNING,C0097,"31 available days, no duties. Check eligibility or staffing",cost_only
+output,available_pilot_unused,WARNING,C0103,"24 available days, no duties. Check eligibility or staffing",cost_only
+output,available_pilot_unused,WARNING,C0109,"31 available days, no duties. Check eligibility or staffing",cost_only
+output,available_pilot_unused,WARNING,C0131,"30 available days, no duties. Check eligibility or staffing",cost_only
+output,month_cap_binding,INFO,1 pilots,within 1h of the monthly cap; this rule is limiting the roster,cost_only
+output,overtime_used,INFO,43 pilots,"349.2 overtime hours, £15,085 premium",cost_only
+output,overtime_used,INFO,23 pilots,"105.8 overtime hours, £7,024 premium",fairness_weight_5
+output,overtime_used,INFO,16 pilots,"150.3 overtime hours, £11,893 premium",fairness_weight_80
+output,overtime_used,INFO,17 pilots,"155.0 overtime hours, £12,441 premium",fairness_only
+output,seat_uncovered,WARNING,D20261009-EDI-B737-02:CPT,"1 seat(s) open on 2026-10-09 11:15, needs reserve cover",sickness_wave_edi_b737
+output,seat_uncovered,WARNING,D20261010-EDI-B737-02:CPT,"1 seat(s) open on 2026-10-10 11:30, needs reserve cover",sickness_wave_edi_b737
+output,seat_uncovered,WARNING,D20261011-EDI-B737-03:CPT,"1 seat(s) open on 2026-10-11 16:00, needs reserve cover",sickness_wave_edi_b737
+output,overtime_used,INFO,18 pilots,"72.4 overtime hours, £5,118 premium",sickness_wave_edi_b737
